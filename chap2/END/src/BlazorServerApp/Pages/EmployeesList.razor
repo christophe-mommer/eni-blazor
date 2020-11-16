@@ -1,0 +1,48 @@
+﻿@page "/employees"
+<h3>Liste des employés</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Poste</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Employees)
+        {
+            <tr>
+                <td>@emp.Name</td>
+                <td>@emp.Lastname</td>
+                <td>@emp.Job.Title</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    public List<Employe> Employees { get; set; } = new List<Employe>
+{
+            new Employe
+            {
+                Name = "John",
+                Lastname = "Doe",
+                Job = new Job
+                {
+                    Id = 1,
+                    Title = "Manager"
+                }
+            },
+            new Employe
+            {
+                Name = "Jean",
+                Lastname = "Valjean",
+                Job = new Job
+                {
+                    Id = 2,
+                    Title = "Journaliste"
+                }
+            }
+        };
+}
