@@ -2,7 +2,7 @@
 
 namespace BlazorAppShared.Models
 {
-    public class Employe
+    public class Employee
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

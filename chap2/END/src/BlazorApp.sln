@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30626.31
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAPI", "BlazorAPI\BlazorAPI.csproj", "{6B171EE3-A581-4C99-B454-3BF4514E96D6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAppShared", "BlazorAppShared\BlazorAppShared.csproj", "{FCECF6D9-B8BF-4A5C-A4CB-0855A9394659}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerApp", "BlazorServerApp\BlazorServerApp.csproj", "{E8B8E0BF-9259-4B82-A830-DE84E3DBCB2F}"
@@ -19,18 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|x64.Build.0 = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Debug|x86.Build.0 = Debug|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|x64.ActiveCfg = Release|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|x64.Build.0 = Release|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|x86.ActiveCfg = Release|Any CPU
-		{6B171EE3-A581-4C99-B454-3BF4514E96D6}.Release|x86.Build.0 = Release|Any CPU
 		{FCECF6D9-B8BF-4A5C-A4CB-0855A9394659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCECF6D9-B8BF-4A5C-A4CB-0855A9394659}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCECF6D9-B8BF-4A5C-A4CB-0855A9394659}.Debug|x64.ActiveCfg = Debug|Any CPU

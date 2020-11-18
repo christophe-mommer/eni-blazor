@@ -1,4 +1,4 @@
-﻿@page "/employees"
+@page "/employees"
 <h3>Liste des employés</h3>
 
 <table class="table">
@@ -22,9 +22,9 @@
 </table>
 
 @code {
-    public List<Employe> Employees { get; set; } = new List<Employe>
+    public List<Employee> Employees { get; set; } = new List<Employee>
 {
-            new Employe
+            new Employee
             {
                 Name = "John",
                 Lastname = "Doe",
@@ -34,7 +34,7 @@
                     Title = "Manager"
                 }
             },
-            new Employe
+            new Employee
             {
                 Name = "Jean",
                 Lastname = "Valjean",
