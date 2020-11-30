@@ -33,38 +33,22 @@ namespace BlazorServerApp.Pages
             new Job { Id = 5, Title = "Secrétaire" }
         };
         protected Employee Employee { get; set; }
-        protected int? SelectedCountryId
-        {
-            get => Employee?.Country?.Id;
-            set
-            {
-                if (value.HasValue)
-                {
-                    Employee.Country = Countries.Find(j => j.Id == value.Value);
-                }
-            }
-        }
-        protected int? SelectedJobId
-        {
-            get => Employee?.Job?.Id;
-            set
-            {
-                if (value.HasValue)
-                {
-                    Employee.Job = Jobs.Find(j => j.Id == value.Value);
-                }
-            }
-        }
+        protected int SelectedCountryId { get; set; }
+        protected int SelectedJobId { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
             Employee = await EmployeeService.GetAll().FirstOrDefaultAsync(e => e.Id == Id);
+            SelectedCountryId = Employee.Country?.Id ?? 0;
+            SelectedJobId = Employee.Job?.Id ?? 0;
             await base.OnInitializedAsync();
         }
-            
-        protected Task Save()
+
+        protected async Task Save()
         {
-            return EmployeeService.AddOrUpdate(Employee);
+            Employee.Job = Jobs.First(j => j.Id == SelectedJobId);
+            Employee.Country = Countries.First(j => j.Id == SelectedCountryId);
+            await EmployeeService.AddOrUpdate(Employee);
         }
     }
 }

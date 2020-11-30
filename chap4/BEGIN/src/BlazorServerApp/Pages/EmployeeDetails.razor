@@ -1,0 +1,56 @@
+﻿@page "/employe/{id:guid}"
+@inherits EmployeeDetailsBase
+
+@if (Employee == null)
+{
+    <h3>Désolé, aucun employé reconnu</h3>
+}
+else
+{
+    <h3>Fiche de @Employee.Name @Employee.Lastname</h3>
+    <form>
+        <div class="form-group">
+            <label for="name">Prénom</label>
+            <input type="text" class="form-control" id="name" placeholder="Prénom" @bind="@Employee.Name">
+        </div>
+        <div class="form-group">
+            <label for="lastname">Nom</label>
+            <input type="text" class="form-control" id="lastname" placeholder="Nom" @bind="Employee.Lastname">
+        </div>
+        <div class="form-group">
+            <label for="birthday">Date de naissance</label>
+            <input type="text" class="form-control" id="birthday" placeholder="dd/MM/yyyy"
+                   @bind="Employee.Birthday" @bind:format="dd/MM/yyyy">
+        </div>
+        <div class="form-group">
+            <label for="street">N° et rue</label>
+            <input type="text" class="form-control" id="street" placeholder="N° et rue"
+                   @bind="Employee.Street">
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Code postal</label>
+            <input type="text" class="form-control" id="zipcode" placeholder="Code postal" @bind="Employee.Zipcode">
+        </div>
+        <div class="form-group">
+            <label for="country">Pays</label>
+            <select @bind="SelectedCountryId" id="country" class="form-control">
+                <option value=""></option>
+                @foreach(var c in Countries)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="job">Job</label>
+            <select @bind="SelectedJobId" id="job" class="form-control">
+                <option value=""></option>
+                @foreach (var j in Jobs)
+                {
+                    <option value="@j.Id">@j.Title</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="Save">Sauvegarder</button>
+    </form>
+}
