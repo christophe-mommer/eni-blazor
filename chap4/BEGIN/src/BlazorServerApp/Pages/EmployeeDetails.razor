@@ -8,49 +8,68 @@
 else
 {
     <h3>Fiche de @Employee.Name @Employee.Lastname</h3>
-    <form>
+    <EditForm OnValidSubmit="Save" Model="Employee">
+        <DataAnnotationsValidator />
         <div class="form-group">
             <label for="name">Prénom</label>
-            <input type="text" class="form-control" id="name" placeholder="Prénom" @bind="@Employee.Name">
+            <InputText type="text" class="form-control" id="name" placeholder="Prénom" @bind-Value="@Employee.Name" />
+            <small>
+                <ValidationMessage For="() => Employee.Name" />
+            </small>
         </div>
         <div class="form-group">
             <label for="lastname">Nom</label>
-            <input type="text" class="form-control" id="lastname" placeholder="Nom" @bind="Employee.Lastname">
+            <InputText type="text" class="form-control" id="lastname" placeholder="Nom" @bind-Value="Employee.Lastname" />
+            <small>
+                <ValidationMessage For="() => Employee.Lastname" />
+            </small>
         </div>
         <div class="form-group">
             <label for="birthday">Date de naissance</label>
             <input type="text" class="form-control" id="birthday" placeholder="dd/MM/yyyy"
-                   @bind="Employee.Birthday" @bind:format="dd/MM/yyyy">
+                       @bind="Employee.Birthday" @bind:format="dd/MM/yyyy" />
         </div>
         <div class="form-group">
             <label for="street">N° et rue</label>
-            <input type="text" class="form-control" id="street" placeholder="N° et rue"
-                   @bind="Employee.Street">
+            <InputText type="text" class="form-control" id="street" placeholder="N° et rue"
+                       @bind-Value="Employee.Street" />
+            <small>
+                <ValidationMessage For="() => Employee.Street" />
+            </small>
         </div>
         <div class="form-group">
             <label for="zipcode">Code postal</label>
-            <input type="text" class="form-control" id="zipcode" placeholder="Code postal" @bind="Employee.Zipcode">
+            <InputText type="text" class="form-control" id="zipcode" placeholder="Code postal" @bind-Value="Employee.Zipcode" />
+            <small>
+                <ValidationMessage For="() => Employee.Zipcode" />
+            </small>
         </div>
         <div class="form-group">
             <label for="country">Pays</label>
             <select @bind="SelectedCountryId" id="country" class="form-control">
-                <option value=""></option>
-                @foreach(var c in Countries)
+                <option value="-1"></option>
+                @foreach (var c in Countries)
                 {
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
+            <small>
+                <ValidationMessage For="() => Employee.Country" />
+            </small>
         </div>
         <div class="form-group">
             <label for="job">Job</label>
             <select @bind="SelectedJobId" id="job" class="form-control">
-                <option value=""></option>
+                <option value="-1"></option>
                 @foreach (var j in Jobs)
                 {
                     <option value="@j.Id">@j.Title</option>
                 }
             </select>
+            <small>
+                <ValidationMessage For="() => Employee.Job" />
+            </small>
         </div>
-        <button type="submit" class="btn btn-primary" @onclick="Save">Sauvegarder</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+    </EditForm>
 }
