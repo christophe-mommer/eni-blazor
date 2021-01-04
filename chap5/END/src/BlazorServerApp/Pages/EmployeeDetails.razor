@@ -1,0 +1,49 @@
+﻿@page "/employe/{id:guid}"
+@inherits EmployeeDetailsBase
+@if (Employee == null)
+{
+    <h3>Désolé, aucun employé reconnu</h3>
+}
+else
+{
+    <h3>Fiche de @Employee.Name @Employee.Lastname</h3>
+    <EditForm OnSubmit="Save" Model="Employee">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <MatTextField Label="Prénom" @bind-Value="@Employee.Name" FullWidth="true" />
+            <small>
+                <ValidationMessage For="() => Employee.Name" />
+            </small>
+        </div>
+        <div class="form-group">
+            <MatTextField Label="Nom" @bind-Value="Employee.Lastname" FullWidth="true" />
+            <small>
+                <ValidationMessage For="() => Employee.Lastname" />
+            </small>
+        </div>
+        <div class="form-group">
+            <MatDatePicker @bind-Value="Employee.Birthday" Format="dd/MM/yyyy" FullWidth="true"></MatDatePicker>
+        </div>
+        <div class="row">
+            <div class="col">
+                <Address ValueChanged="AddressChanged" Value="Employee.Address" />
+            </div>
+            <div class="col">
+                <div id="map" style="height:250px"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <MatSelect Label="Post occupé" @bind-Value="SelectedJobId" FullWidth="true">
+                <MatOption TValue="int" Value="-1">&nbsp;</MatOption>
+                @foreach (var j in Jobs)
+                    {
+                    <MatOption TValue="int" Value="j.Id">@j.Title</MatOption>
+                    }
+            </MatSelect>
+            <small>
+                <ValidationMessage For="() => Employee.Job" />
+            </small>
+        </div>
+        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+    </EditForm>
+}
