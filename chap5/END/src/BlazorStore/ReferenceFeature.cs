@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace BlazorStore
 {
-    public class EmployeesFeature : Feature<EmployeeState>
+    public class ReferenceFeature : Feature<ReferenceState>
     {
         public override string GetName()
-            => "Employees";
+            => "Reference";
 
-        protected override EmployeeState GetInitialState()
-            => new EmployeeState();
+        protected override ReferenceState GetInitialState()
+            => new ReferenceState();
     }
 }

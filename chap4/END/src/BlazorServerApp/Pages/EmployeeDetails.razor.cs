@@ -88,6 +88,15 @@ namespace BlazorServerApp.Pages
                     }
                 }
             }
+        }        
+		
+		protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if(firstRender)
+            {
+                await CheckAddressAndDisplayMap();
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         protected override async Task OnInitializedAsync()
@@ -101,7 +110,7 @@ namespace BlazorServerApp.Pages
             }
             else
             {
-                Employee = (await EmployeeService.GetAll().ToListAsync()).Find(e => e.Id == Id);
+                Employee = await EmployeeService.GetAll().FirstOrDefaultAsync(e => e.Id == Id);
             }
             await base.OnInitializedAsync();
         }

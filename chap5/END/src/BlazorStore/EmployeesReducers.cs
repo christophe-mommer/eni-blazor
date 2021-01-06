@@ -11,7 +11,7 @@ namespace BlazorStore
     public static class EmployeesReducers
     {
         [ReducerMethod]
-        public static EmployeeState ReduceEmployeeLoaded(EmployeeState state, LoadEmployees action)
+        public static EmployeeState ReduceLoadEmployees(EmployeeState state, LoadEmployees action)
             => state with { ErrorCode = "" };
 
         [ReducerMethod]
@@ -19,7 +19,7 @@ namespace BlazorStore
             => state with { Employees = action.Employees.ToArray(), ErrorCode = "" };
 
         [ReducerMethod]
-        public static EmployeeState ReducerEmployeeLoadingFaield(EmployeeState state, EmployeesLoadingFailed action)
+        public static EmployeeState ReducerEmployeeLoadingFailed(EmployeeState state, EmployeesLoadingFailed action)
             => state with { ErrorCode = action.ErrorCode };
     }
 }

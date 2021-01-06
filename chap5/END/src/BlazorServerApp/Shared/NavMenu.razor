@@ -29,4 +29,20 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    [Inject] protected Fluxor.IDispatcher Dispatcher { get; set; }
+    [Inject] protected Fluxor.IState<BlazorStore.ReferenceState> State { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (State.Value.Countries == null)
+        {
+            Dispatcher.Dispatch(new LoadCountries());
+        }
+        if (State.Value.Jobs == null)
+        {
+            Dispatcher.Dispatch(new LoadJobs());
+        }
+        base.OnInitialized();
+    }
 }

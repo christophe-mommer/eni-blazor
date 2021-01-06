@@ -1,11 +1,16 @@
 ﻿using BlazorAppShared.Models;
+using BlazorStore;
+using BlazorStore.Actions;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorServerApp.Components
 {
-    public class AddressBase : ComponentBase
+    public class AddressBase : ComponentBase, IDisposable
     {
         protected List<Country> Countries = new List<Country>
         {
@@ -15,6 +20,12 @@ namespace BlazorServerApp.Components
             new Country{ Id = 4, Name = "Canada" },
             new Country{ Id = 5, Name = "Autre" }
         };
+
+        [Inject]
+        protected IState<ReferenceState> RefState { get; set; }
+
+        [Inject]
+        protected IDispatcher Dispatcher { get; set; }
 
         [Parameter]
         public AddressModel Value
@@ -45,7 +56,33 @@ namespace BlazorServerApp.Components
         protected override void OnInitialized()
         {
             Value ??= new AddressModel();
+            if (RefState.Value.Countries != null)
+            {
+                Countries = RefState.Value.Countries.ToList();
+            }
+            else
+            {
+                RefState.StateChanged += RefState_StateChanged;
+                Dispatcher.Dispatch(new LoadCountries());
+            }
             base.OnInitialized();
+        }
+
+        private void RefState_StateChanged(object sender, ReferenceState e)
+        {
+            if (e.Countries != null)
+            {
+                Countries = e.Countries.ToList();
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                RefState.StateChanged -= RefState_StateChanged;
+            }
+            catch { }
         }
     }
 }

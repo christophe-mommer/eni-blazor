@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorStore
+namespace BlazorServices.Abstractions
 {
-    public record EmployeeState(IEnumerable<Employee>? Employees = null, string ErrorCode = "");
+    public interface IJobService
+    {
+        IAsyncEnumerable<Job> GetAll();
+    }
 }

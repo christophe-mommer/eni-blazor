@@ -7,5 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorStore
 {
-    public record EmployeeState(IEnumerable<Employee>? Employees = null, string ErrorCode = "");
+    public record ReferenceState(
+        IEnumerable<Country>? Countries = null,
+        IEnumerable<Job>? Jobs = null,
+        string ErrorCode = "");
 }

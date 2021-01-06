@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorStore
+namespace BlazorStore.Actions
 {
-    public record EmployeeState(IEnumerable<Employee>? Employees = null, string ErrorCode = "");
+    public record JobsLoaded(IEnumerable<Job> Jobs);
 }

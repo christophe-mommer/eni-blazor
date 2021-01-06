@@ -1,5 +1,8 @@
 ﻿using BlazorAppShared.Models;
 using BlazorServices.Abstractions;
+using BlazorStore;
+using BlazorStore.Actions;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json.Linq;
@@ -11,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace BlazorServerApp.Pages
 {
-    public class EmployeeDetailsBase : ComponentBase
+    public class EmployeeDetailsBase : ComponentBase, IDisposable
     {
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
@@ -19,21 +22,36 @@ namespace BlazorServerApp.Pages
         private Task<IJSObjectReference> Module =>
             _module ??= JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/map.js").AsTask();
 
+        [Inject]
+        protected NavigationManager Navigation { get; set; }
+        [Inject]
+        protected IDispatcher Dispatcher { get; set; }
+
+        [Inject]
+        protected IState<EmployeeState> State { get; set; }
+        [Inject]
+        protected IState<ReferenceState> RefState { get; set; }
+
         [Parameter]
         public Guid Id { get; set; }
 
         [Inject]
         public IEmployeeService EmployeeService { get; set; }
 
-        protected List<Job> Jobs = new List<Job>
-        {
-            new Job { Id = 1, Title = "Manager" },
-            new Job { Id = 2, Title = "Journaliste" },
-            new Job { Id = 3, Title = "Développeur" },
-            new Job { Id = 4, Title = "Directeur" },
-            new Job { Id = 5, Title = "Secrétaire" }
-        };
         protected Employee Employee { get; set; }
+        private IEnumerable<Job> jobs { get; set; }
+        protected List<Job> Jobs
+        {
+            get => jobs.ToList();
+            set
+            {
+                jobs = value;
+                if(value != null)
+                {
+                    SelectedJobId = SelectedJobId; // To trigger Employee.Job affectation
+                }
+            }
+        }
         protected int SelectedJobId
         {
             get => Employee?.Job?.Id ?? -1;
@@ -41,7 +59,7 @@ namespace BlazorServerApp.Pages
             {
                 if (value != -1)
                 {
-                    Employee.Job = Jobs.Find(j => j.Id == value);
+                    Employee.Job = Jobs?.Find(j => j.Id == value);
                 }
             }
         }
@@ -54,7 +72,8 @@ namespace BlazorServerApp.Pages
 
         private async Task CheckAddressAndDisplayMap()
         {
-            if (!string.IsNullOrWhiteSpace(Employee.Address?.Street)
+            if (Employee != null
+             && !string.IsNullOrWhiteSpace(Employee.Address?.Street)
              && !string.IsNullOrWhiteSpace(Employee.Address?.Zipcode)
              && !string.IsNullOrWhiteSpace(Employee.Address?.Country?.Name))
             {
@@ -76,7 +95,7 @@ namespace BlazorServerApp.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if(firstRender)
             {
                 await CheckAddressAndDisplayMap();
             }
@@ -94,14 +113,58 @@ namespace BlazorServerApp.Pages
             }
             else
             {
-                Employee = await EmployeeService.GetAll().FirstOrDefaultAsync(e => e.Id == Id);
+                if (State.Value.Employees != null)
+                {
+                    Employee = State.Value.Employees.FirstOrDefault(e => e.Id == Id);
+                }
+                else
+                {
+                    Dispatcher.Dispatch(new LoadEmployees());
+                    State.StateChanged += State_StateChanged;
+                }
+            }
+            if (RefState.Value.Jobs == null)
+            {
+                Dispatcher.Dispatch(new LoadJobs());
+                RefState.StateChanged += RefState_StateChanged;
+            }
+            else
+            {
+                Jobs = RefState.Value.Jobs.ToList();
             }
             await base.OnInitializedAsync();
         }
 
-        protected Task Save()
+        private void RefState_StateChanged(object sender, ReferenceState e)
         {
-            return EmployeeService.AddOrUpdate(Employee);
+            if(e.Jobs != null)
+            {
+                Jobs = RefState.Value.Jobs.ToList();
+            }
+        }
+
+        private void State_StateChanged(object sender, EmployeeState e)
+        {
+            if (e.Employees != null)
+            {
+                Employee = e.Employees.FirstOrDefault(e => e.Id == Id);
+            }
+        }
+
+        protected async Task Save()
+        {
+            await EmployeeService.AddOrUpdate(Employee);
+            Navigation.NavigateTo("/employees");
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                State.StateChanged -= State_StateChanged;
+                RefState.StateChanged -= RefState_StateChanged;
+            }
+            catch { }
         }
     }
 }

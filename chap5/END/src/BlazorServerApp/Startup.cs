@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net.Http;
 
 namespace BlazorServerApp
 {
@@ -32,12 +33,16 @@ namespace BlazorServerApp
             services.AddOptions();
             services.Configure<ApiOptions>(Configuration.GetSection("Api"));
 
-            //services.AddSingleton<IEmployeeService, InMemoryEmployeeService>();
-            services.AddHttpClient<IEmployeeService, HttpEmployeeService>((sp, client) =>
+            void ConfigureClient(IServiceProvider sp, HttpClient client)
             {
                 var options = sp.GetRequiredService<IOptions<ApiOptions>>();
                 client.BaseAddress = new Uri(options.Value.Url);
-            });
+            }
+            //services.AddSingleton<IEmployeeService, InMemoryEmployeeService>();
+            services.AddHttpClient<IEmployeeService, HttpEmployeeService>(ConfigureClient);
+            services.AddHttpClient<IJobService, HttpJobService>(ConfigureClient);
+            services.AddHttpClient<ICountryService, HttpCountryService>(ConfigureClient);
+
             services.AddMatBlazor();
 
             services.AddFluxor(opts =>

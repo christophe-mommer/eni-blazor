@@ -25,14 +25,20 @@ namespace BlazorServerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees
+                .Include(e => e.Job)
+                .Include(e => e.Address.Country)
+                .ToListAsync();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees
+                .Include(e => e.Job)
+                .Include(e => e.Address.Country)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
             {
@@ -52,6 +58,7 @@ namespace BlazorServerAPI.Controllers
                 return BadRequest();
             }
 
+            await MapDbObjects(employee);
             _context.Entry(employee).State = EntityState.Modified;
 
             try
@@ -78,6 +85,7 @@ namespace BlazorServerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
+            await MapDbObjects(employee);
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
@@ -103,6 +111,25 @@ namespace BlazorServerAPI.Controllers
         private bool EmployeeExists(Guid id)
         {
             return _context.Employees.Any(e => e.Id == id);
+        }
+        private async Task MapDbObjects(Employee employee)
+        {
+            if (employee.Address?.Country != null)
+            {
+                var dbCountry = await _context.Countries.FirstOrDefaultAsync(c => c.Id == employee.Address.Country.Id);
+                if (dbCountry != null)
+                {
+                    employee.Address.Country = dbCountry;
+                }
+            }
+            if (employee.Job != null)
+            {
+                var dbJob = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == employee.Job.Id);
+                if (dbJob != null)
+                {
+                    employee.Job = dbJob;
+                }
+            }
         }
     }
 }

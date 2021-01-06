@@ -10,41 +10,27 @@ using System.Threading.Tasks;
 
 namespace BlazorServices
 {
-    public class HttpEmployeeService : IEmployeeService
+    public class HttpEmployeeService : ServiceBase<Employee>, IEmployeeService
     {
-        private readonly HttpClient client;
-
         public HttpEmployeeService(
             HttpClient client)
+            : base(client)
         {
-            this.client = client;
         }
 
         public Task AddOrUpdate(Employee employee)
         {
             if (employee.Id != Guid.Empty)
             {
-                return client.PutAsJsonAsync($"api/employee/{employee.Id}", employee);
+                return client.PutAsJsonAsync($"api/employees/{employee.Id}", employee);
             }
             else
             {
-                return client.PostAsJsonAsync("api/employee", employee);
+                return client.PostAsJsonAsync("api/employees", employee);
             }
         }
 
         public Task Delete(Employee employee) => client.DeleteAsync($"api/employees/{employee.Id}");
 
-        public async IAsyncEnumerable<Employee> GetAll()
-        {
-            var response = await client.GetAsync("api/employees");
-            if (response.IsSuccessStatusCode)
-            {
-                var employees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(await response.Content.ReadAsStringAsync());
-                foreach (var e in employees)
-                {
-                    yield return e;
-                }
-            }
-        }
     }
 }
