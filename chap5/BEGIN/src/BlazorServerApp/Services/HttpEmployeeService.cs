@@ -24,11 +24,11 @@ namespace BlazorServerApp.Services
         {
             if(employee.Id != Guid.Empty)
             {
-                return client.PutAsJsonAsync($"api/employee/{employee.Id}", employee);
+                return client.PutAsJsonAsync($"api/employees/{employee.Id}", employee);
             }
             else
             {
-                return client.PostAsJsonAsync("api/employee", employee);
+                return client.PostAsJsonAsync("api/employees", employee);
             }
         }
 

@@ -19,6 +19,9 @@ namespace BlazorServerApp.Pages
         private Task<IJSObjectReference> Module =>
             _module ??= JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/map.js").AsTask();
 
+        [Inject]
+        protected NavigationManager Navigation { get; set; }
+
         [Parameter]
         public Guid Id { get; set; }
 
@@ -33,7 +36,19 @@ namespace BlazorServerApp.Pages
             new Job { Id = 4, Title = "Directeur" },
             new Job { Id = 5, Title = "Secrétaire" }
         };
-        protected Employee Employee { get; set; }
+        private Employee employee;
+        protected Employee Employee
+        {
+            get => employee; 
+            set
+            {
+                employee = value;
+                if (value != null)
+                {
+                    _ = CheckAddressAndDisplayMap();
+                }
+            }
+        }
         protected int SelectedJobId
         {
             get => Employee?.Job?.Id ?? -1;
@@ -54,7 +69,8 @@ namespace BlazorServerApp.Pages
 
         private async Task CheckAddressAndDisplayMap()
         {
-            if (!string.IsNullOrWhiteSpace(Employee.Address?.Street)
+            if (Employee != null
+             && !string.IsNullOrWhiteSpace(Employee.Address?.Street)
              && !string.IsNullOrWhiteSpace(Employee.Address?.Zipcode)
              && !string.IsNullOrWhiteSpace(Employee.Address?.Country?.Name))
             {
@@ -74,15 +90,6 @@ namespace BlazorServerApp.Pages
             }
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                await CheckAddressAndDisplayMap();
-            }
-            await base.OnAfterRenderAsync(firstRender);
-        }
-
         protected override async Task OnInitializedAsync()
         {
             if (Id == Guid.Empty)
@@ -94,14 +101,15 @@ namespace BlazorServerApp.Pages
             }
             else
             {
-                Employee = await EmployeeService.GetAll().FirstOrDefaultAsync(e => e.Id == Id);
+                Employee = (await EmployeeService.GetAll().ToListAsync()).Find(e => e.Id == Id);
             }
             await base.OnInitializedAsync();
         }
 
-        protected Task Save()
+        protected async Task Save()
         {
-            return EmployeeService.AddOrUpdate(Employee);
+            await EmployeeService.AddOrUpdate(Employee);
+            Navigation.NavigateTo("/employees");
         }
     }
 }
