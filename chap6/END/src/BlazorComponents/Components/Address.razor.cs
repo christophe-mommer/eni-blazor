@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorServerApp.Components
+namespace BlazorComponents.Components
 {
     public class AddressBase : ComponentBase, IDisposable
     {
@@ -16,7 +16,6 @@ namespace BlazorServerApp.Components
 
         [Inject]
         protected IState<ReferenceState> RefState { get; set; }
-
         [Inject]
         protected IDispatcher Dispatcher { get; set; }
 
@@ -41,21 +40,15 @@ namespace BlazorServerApp.Components
             }
         }
 
-        protected Task AddressUpdated()
-        {
-            return ValueChanged.InvokeAsync(Value);
-        }
+        protected Task AddressUpdated() => ValueChanged.InvokeAsync(Value);
 
         protected override void OnInitialized()
         {
             Value ??= new AddressModel();
-            if (RefState.Value.Countries != null)
+            RefState.StateChanged += RefState_StateChanged;
+            Countries = RefState.Value.Countries?.ToList() ?? new List<Country>();
+            if (!Countries.Any())
             {
-                Countries = RefState.Value.Countries.ToList();
-            }
-            else
-            {
-                RefState.StateChanged += RefState_StateChanged;
                 Dispatcher.Dispatch(new LoadCountries());
             }
             base.OnInitialized();
@@ -67,6 +60,7 @@ namespace BlazorServerApp.Components
             {
                 Countries = e.Countries.ToList();
             }
+            _ = InvokeAsync(StateHasChanged);
         }
 
         public void Dispose()

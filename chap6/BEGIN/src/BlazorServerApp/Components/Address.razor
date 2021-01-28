@@ -1,0 +1,27 @@
+﻿@inherits AddressBase
+
+<div class="form-group">
+    <MatTextField @bind-Value="Value.Street" Label="N° et rue" @onfocusout="() => AddressUpdated()" FullWidth="true"></MatTextField>
+    <small>
+        <ValidationMessage For="() => Value.Street" />
+    </small>
+</div>
+<div class="form-group">
+    <MatTextField Label="Code postal" @bind-Value="Value.Zipcode"
+                  @onfocusout="() => AddressUpdated()" FullWidth="true" />
+    <small>
+        <ValidationMessage For="() => Value.Zipcode" />
+    </small>
+</div>
+<div class="form-group">
+    <MatSelect Label="Pays" @bind-Value="SelectedCountryId" @onfocusout="() => AddressUpdated()" FullWidth="true">
+        <MatOption TValue="int" Value="-1">&nbsp;</MatOption>
+        @foreach (var c in Countries)
+        {
+            <MatOption TValue="int" Value="@c.Id">@c.Name</MatOption>
+        }
+    </MatSelect>
+    <small>
+        <ValidationMessage For="() => Value.Country" />
+    </small>
+</div>

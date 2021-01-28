@@ -1,0 +1,43 @@
+﻿@page "/employees"
+@inherits EmployeesListBase
+<h3>Liste des employés</h3>
+
+@if (State.Value.Employees == null && string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <Loader></Loader>
+}
+else
+{
+    if (!string.IsNullOrWhiteSpace(ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <div class="text-center">@ErrorMessage</div>
+        </div>
+        <MatButton @onclick="() => Dispatcher.Dispatch(new LoadEmployees())" Raised="true">Réessayer</MatButton>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Poste</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in State.Value.Employees)
+                {
+                    <tr>
+                        <td>@emp.Name</td>
+                        <td>@emp.Lastname</td>
+                        <td>@emp.Job.Title</td>
+                        <td><a href="/employe/@emp.Id"><span class="oi oi-pencil" aria-hidden="true"></span></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <MatFAB Icon="@MatIconNames.Add" Class="button-add" @onclick="CreateEmployee"></MatFAB>
+    }
+}
